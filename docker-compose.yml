@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  application:
+    build: .
+    container_name: application
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - dior_market_network
+    ports:
+      - 3009:3009
+  influxdb:
+    image: influxdb:1.8.10-alpine
+    container_name: influxdb
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - DOCKER_INFLUXDB_INIT_USERNAME=$INFLUX_USER
+      - DOCKER_INFLUXDB_INIT_PASSWORD=$INFLUX_PASS
+      - DOCKER_INFLUXDB_INIT_ORG=ckade
+      - DOCKER_INFLUXDB_INIT_BUCKET=ckade
+    networks:
+      - dior_market_network
+  redis:
+    image: redis
+    container_name: redis
+    networks:
+      - dior_market_network
+    restart: always
+  couchbase:
+    image: couchbase
+    container_name: couchbase
+    networks:
+      - dior_market_network
+    restart: always
+    ports:
+      - 8091:8091
+networks:
+  dior_market_network:
